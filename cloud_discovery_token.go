@@ -10,20 +10,23 @@ import (
 	"github.com/coreos/coreos-cloudinit/config"
 )
 
-func GetToken(BaseUrl string) string {
+func GetToken(BaseUrl string) (string, error) {
 	NewTokenURL := fmt.Sprintf("%s/new", BaseUrl)
 	resp, err := http.Get(NewTokenURL)
 	if err != nil {
-		log.Fatalln(err)
+		return "", err
+	}
+	if resp.StatusCode != 200 {
+		return "", fmt.Errorf("Received %s", resp.Status)
 	}
 	defer resp.Body.Close()
 
 	token, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
+		return "", err
 	}
 
-	return string(token)
+	return string(token), nil
 }
 
 func main() {
@@ -42,7 +45,11 @@ func main() {
 			log.Fatalln(err)
 		}
 		if len(CloudConfig.Coreos.Etcd.Discovery) == 0 {
-			token := GetToken(*BaseUrl)
+			token, err := GetToken(*BaseUrl)
+			if err != nil {
+				log.Fatalln(err)
+			}
+
 			fmt.Printf("discovery: %s\n", token)
 			CloudConfig.Coreos.Etcd.Discovery = token
 		} else {
