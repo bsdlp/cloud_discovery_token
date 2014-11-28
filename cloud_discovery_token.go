@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -26,7 +27,11 @@ func GetToken(BaseUrl string) string {
 }
 
 func main() {
-	file, err := ioutil.ReadFile("/tmp/cloud-config.yaml")
+	FilePath := flag.String("config", "./cloud-config.yaml", "Path to cloud-config yaml file")
+	BaseUrl := flag.String("url", "https://discovery.etcd.io", "URL to cluster discovery service")
+	flag.Parse()
+
+	file, err := ioutil.ReadFile(*FilePath)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -37,7 +42,7 @@ func main() {
 			log.Fatalln(err)
 		}
 		if len(CloudConfig.Coreos.Etcd.Discovery) == 0 {
-			token := GetToken("https://discovery.etcd.io")
+			token := GetToken(*BaseUrl)
 			fmt.Printf("discovery: %s\n", token)
 			CloudConfig.Coreos.Etcd.Discovery = token
 		} else {
