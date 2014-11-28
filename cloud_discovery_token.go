@@ -17,7 +17,7 @@ func GetToken(BaseUrl string) (string, error) {
 		return "", err
 	}
 	if resp.StatusCode != 200 {
-		return "", fmt.Errorf("Received %s", resp.Status)
+		return "", fmt.Errorf("%s: %s", NewTokenURL, resp.Status)
 	}
 	defer resp.Body.Close()
 
