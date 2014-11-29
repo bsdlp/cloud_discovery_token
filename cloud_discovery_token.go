@@ -36,7 +36,7 @@ func GetToken(BaseUrl string) (string, error) {
 	return string(token), nil
 }
 
-func WriteCloudConfig(FilePath *string, cfg config.CloudConfig) error {
+func WriteCloudConfig(FilePath *string, cfg *config.CloudConfig) error {
 	WriteFile, err := os.Create(*FilePath)
 	if err != nil {
 		return err
@@ -68,7 +68,7 @@ func main() {
 			CloudConfig.Coreos.Etcd.Discovery = token
 
 			if *Overwrite == true {
-				err = WriteCloudConfig(FilePath, *CloudConfig)
+				err = WriteCloudConfig(FilePath, CloudConfig)
 				LogError(err)
 			}
 		} else {
