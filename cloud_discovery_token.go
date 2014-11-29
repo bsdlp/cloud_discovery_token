@@ -53,8 +53,13 @@ func main() {
 	Overwrite := flag.Bool("overwrite", false, "Overwrite config with new token")
 	flag.Parse()
 
+	// If no config is provided, just print a new discovery token to stdout
 	if *FilePath == "" {
-		flag.Usage()
+		token, err := GetToken(*BaseUrl)
+		LogError(err)
+
+		fmt.Printf("discovery: %s\n", token)
+		return
 	}
 
 	file, err := ioutil.ReadFile(*FilePath)
