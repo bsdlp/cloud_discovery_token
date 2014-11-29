@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/coreos/coreos-cloudinit/config"
 )
@@ -32,6 +33,7 @@ func GetToken(BaseUrl string) (string, error) {
 func main() {
 	FilePath := flag.String("config", "./cloud-config.yaml", "Path to cloud-config yaml file")
 	BaseUrl := flag.String("url", "https://discovery.etcd.io", "URL to cluster discovery service")
+	Overwrite := flag.Bool("overwrite", false, "Overwrite config with new token")
 	flag.Parse()
 
 	file, err := ioutil.ReadFile(*FilePath)
@@ -52,6 +54,19 @@ func main() {
 
 			fmt.Printf("discovery: %s\n", token)
 			CloudConfig.Coreos.Etcd.Discovery = token
+
+			if *Overwrite == true {
+				WriteFile, err := os.Create(*FilePath)
+				if err != nil {
+					log.Fatalln(err)
+				}
+				defer WriteFile.Close()
+
+				_, err = WriteFile.WriteString(CloudConfig.String())
+				if err != nil {
+					log.Fatalln(err)
+				}
+			}
 		} else {
 			fmt.Printf("discovery: %s\n", CloudConfig.Coreos.Etcd.Discovery)
 		}
