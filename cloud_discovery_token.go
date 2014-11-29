@@ -36,6 +36,17 @@ func GetToken(BaseUrl string) (string, error) {
 	return string(token), nil
 }
 
+func WriteCloudConfig(FilePath *string, cfg config.CloudConfig) error {
+	WriteFile, err := os.Create(*FilePath)
+	if err != nil {
+		return err
+	}
+	defer WriteFile.Close()
+
+	_, err = WriteFile.WriteString(cfg.String())
+	return err
+}
+
 func main() {
 	FilePath := flag.String("config", "./cloud-config.yaml", "Path to cloud-config yaml file")
 	BaseUrl := flag.String("url", "https://discovery.etcd.io", "URL to cluster discovery service")
@@ -57,12 +68,7 @@ func main() {
 			CloudConfig.Coreos.Etcd.Discovery = token
 
 			if *Overwrite == true {
-				WriteFile, err := os.Create(*FilePath)
-				LogError(err)
-
-				defer WriteFile.Close()
-
-				_, err = WriteFile.WriteString(CloudConfig.String())
+				err = WriteCloudConfig(FilePath, CloudConfig)
 				LogError(err)
 			}
 		} else {
