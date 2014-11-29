@@ -48,10 +48,14 @@ func WriteCloudConfig(FilePath *string, cfg *config.CloudConfig) error {
 }
 
 func main() {
-	FilePath := flag.String("config", "./cloud-config.yaml", "Path to cloud-config yaml file")
+	FilePath := flag.String("config", "", "Path to cloud-config yaml file")
 	BaseUrl := flag.String("url", "https://discovery.etcd.io", "URL to cluster discovery service")
 	Overwrite := flag.Bool("overwrite", false, "Overwrite config with new token")
 	flag.Parse()
+
+	if *FilePath == "" {
+		flag.Usage()
+	}
 
 	file, err := ioutil.ReadFile(*FilePath)
 	LogError(err)
