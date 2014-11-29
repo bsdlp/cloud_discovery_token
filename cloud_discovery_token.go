@@ -68,7 +68,7 @@ func main() {
 			CloudConfig.Coreos.Etcd.Discovery = token
 
 			if *Overwrite == true {
-				err = WriteCloudConfig(FilePath, CloudConfig)
+				err = WriteCloudConfig(FilePath, *CloudConfig)
 				LogError(err)
 			}
 		} else {
