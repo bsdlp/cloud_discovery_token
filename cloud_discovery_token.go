@@ -74,5 +74,7 @@ func main() {
 		} else {
 			fmt.Printf("discovery: %s\n", CloudConfig.Coreos.Etcd.Discovery)
 		}
+	} else {
+		log.Fatalln(fmt.Printf("%s is not a valid cloud-config file.", *FilePath))
 	}
 }
