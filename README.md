@@ -3,6 +3,10 @@
 Gets a token from your favorite [cluster discovery
 service](https://coreos.com/docs/cluster-management/setup/cluster-discovery/) so you don't have to.
 
+## Version
+
+* `v0.0.1` - Super Useful-less!
+
 ## Usage
 
 ```
